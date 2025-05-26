@@ -51,7 +51,7 @@ export default function HotelDetailsPage({ params }: HotelDetailsPageProps) {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold text-red-600">Hotel Not Found</h1>
-        <a href="/hotels" className="text-indigo-600 hover:text-indigo-800 mt-4 inline-block">
+        <a href="/" className="text-indigo-600 hover:text-indigo-800 mt-4 inline-block">
           &larr; Back to Listings
         </a>
       </div>
@@ -62,7 +62,7 @@ export default function HotelDetailsPage({ params }: HotelDetailsPageProps) {
     <div className="container mx-auto p-4">
       {/* Back to Listings Link */}
       <a
-        href="/hotels"
+        href="/"
         className="text-indigo-600 hover:text-indigo-800 mb-6 inline-block"
       >
         &larr; Back to Listings
