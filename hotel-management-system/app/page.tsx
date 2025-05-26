@@ -1,6 +1,8 @@
+"use client";
 // hotel-management-system/app/page.tsx (Originally HotelListingPage)
 import Link from 'next/link'; // Import Link
 import { useState } from 'react';
+import { FaSearch, FaFilter } from 'react-icons/fa';
 
 interface Hotel {
   id: string;
@@ -56,36 +58,44 @@ export default function HomePage() {
   const filteredHotels = filterHotels();
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Hotel Listings</h1>
-      <div className="md:flex md:space-x-6">
-        {/* Left Column: Filters */}
-        <div className="md:w-1/3 mb-8 md:mb-0">
-          <div className="p-4 border rounded-lg shadow-sm sticky top-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Search & Filters</h2>
-            <div className="grid grid-cols-1 gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-100 py-10">
+      <div className="container mx-auto px-4">
+        <h1 className="text-4xl font-extrabold mb-10 text-indigo-800 text-center tracking-tight drop-shadow">
+          🏨 Hotel Listings
+        </h1>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Filters Sidebar */}
+          <aside className="lg:w-1/4 w-full bg-white/80 border border-indigo-100 rounded-2xl shadow-lg p-6 backdrop-blur-md mb-4 lg:mb-0">
+            <div className="flex items-center gap-2 mb-6">
+              {(FaFilter as any)({ className: "text-indigo-500 text-xl" })}
+              <h2 className="text-2xl font-semibold text-indigo-700">Search & Filters</h2>
+            </div>
+            <div className="space-y-6">
               {/* Search Input */}
               <div>
-                <label htmlFor="search" className="block text-sm font-semibold text-gray-700 mb-1">
+                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
                   Search Hotels
                 </label>
-                <input
-                  type="text"
-                  id="search"
-                  placeholder="e.g., Grand Hyatt"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="search"
+                    placeholder="e.g., Grand Hyatt"
+                    className="block w-full px-4 py-2 border border-indigo-200 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition pr-10"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  {(FaSearch as any)({ className: "absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400" })}
+                </div>
               </div>
               {/* Price Range Filter */}
               <div>
-                <label htmlFor="price-range" className="block text-sm font-semibold text-gray-700 mb-1">
+                <label htmlFor="price-range" className="block text-sm font-medium text-gray-700 mb-1">
                   Price Range
                 </label>
                 <select
                   id="price-range"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="block w-full px-4 py-2 border border-indigo-200 bg-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
                 >
@@ -98,79 +108,69 @@ export default function HomePage() {
               </div>
               {/* Amenities Filter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
-                <div className="mt-2 space-y-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amenities</label>
+                <div className="flex flex-wrap gap-2 mt-2">
                   {['Pool', 'Wi-Fi', 'Parking', 'Gym', 'Spa'].map((amenity) => (
-                    <div key={amenity} className="flex items-center mb-1">
+                    <label key={amenity} className="flex items-center bg-indigo-50 px-3 py-1 rounded-full shadow-sm cursor-pointer hover:bg-indigo-100 transition">
                       <input
                         id={`amenity-${amenity.toLowerCase()}`}
                         name={`amenity-${amenity.toLowerCase()}`}
                         type="checkbox"
-                        className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mr-2"
                         checked={selectedAmenities.includes(amenity)}
                         onChange={() => handleAmenityChange(amenity)}
                       />
-                      <label htmlFor={`amenity-${amenity.toLowerCase()}`} className="ml-2 block text-sm text-gray-800">
-                        {amenity}
-                      </label>
-                    </div>
+                      <span className="text-sm text-indigo-700">{amenity}</span>
+                    </label>
                   ))}
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        {/* Right Column: Hotel List */}
-        <div className="md:w-2/3">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Available Hotels</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {filteredHotels.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500">No hotels found.</div>
-            ) : (
-              filteredHotels.map((hotel) => (
-                <Link
-                  href={`/hotels/${hotel.id}`}
-                  key={hotel.id}
-                  className="block rounded-lg border border-gray-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-                  legacyBehavior={false}
-                >
-                  <div className="flex flex-col h-full">
-                    {/* Image Placeholder */}
-                    <div className="h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                      <span className="text-gray-500">Hotel Image Placeholder</span>
-                    </div>
-                    {/* Card Body */}
-                    <div className="p-4 flex-grow flex flex-col">
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2">{hotel.name}</h3>
-                      <p className="text-lg font-semibold text-gray-700 mb-3">
-                        ${hotel.price}<span className="text-sm font-normal text-gray-500">/night</span>
+          </aside>
+          {/* Hotel Cards Grid */}
+          <main className="flex-1">
+            <h2 className="text-2xl font-bold mb-6 text-indigo-800">Available Hotels</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredHotels.length === 0 ? (
+                <div className="col-span-full text-center text-gray-500">No hotels found.</div>
+              ) : (
+                filteredHotels.map((hotel) => (
+                  <Link
+                    href={`/hotels/${hotel.id}`}
+                    key={hotel.id}
+                    className="group block bg-white border border-indigo-100 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all cursor-pointer h-full flex flex-col justify-between hover:-translate-y-1 hover:bg-indigo-50"
+                    legacyBehavior={false}
+                  >
+                    <div className="flex flex-col h-full">
+                      {/* Image Placeholder */}
+                      <div className="h-40 bg-gradient-to-tr from-indigo-200 via-indigo-100 to-white rounded-xl flex items-center justify-center mb-4">
+                        <span className="text-indigo-400 text-lg">Hotel Image</span>
+                      </div>
+                      <h3 className="text-2xl font-bold mb-2 text-indigo-700 group-hover:text-indigo-900 transition">{hotel.name}</h3>
+                      <p className="text-lg text-gray-700 mb-2">
+                        <span className="font-semibold text-indigo-600">${hotel.price}</span>
+                        <span className="text-gray-500"> /night</span>
                       </p>
-                      <div className="mb-3">
-                        <h4 className="text-sm font-medium text-gray-600 mb-1">Amenities:</h4>
-                        <div className="flex flex-wrap">
+                      <div className="mb-2">
+                        <h4 className="text-sm font-medium text-gray-600">Amenities:</h4>
+                        <ul className="flex flex-wrap gap-2 mt-1">
                           {hotel.amenities.map((amenity) => (
-                            <span
-                              key={amenity}
-                              className="inline-block bg-gray-100 text-gray-600 text-xs font-semibold mr-2 mb-2 px-2.5 py-1 rounded-full"
-                            >
+                            <li key={amenity} className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-medium">
                               {amenity}
-                            </span>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       </div>
                       <div className="flex-grow"></div>
+                      <p className="text-indigo-600 group-hover:text-indigo-800 font-semibold mt-4 self-start transition">
+                        View Details &rarr;
+                      </p>
                     </div>
-                    {/* View Details Button */}
-                    <div className="p-4 pt-0">
-                      <div className="inline-block bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-150 text-center w-full cursor-pointer">
-                        View Details
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </main>
         </div>
       </div>
     </div>
